@@ -138,18 +138,6 @@ RUN mkdir -p /run/renderd/ \
   &&  ln  -s  /data/tiles              /var/cache/renderd/tiles                \
 ;
 
-RUN echo '[default] \n\
-URI=/tile/ \n\
-TILEDIR=/var/cache/renderd/tiles \n\
-XML=/home/renderer/src/openstreetmap-carto/mapnik.xml \n\
-HOST=${PGHOST} \n\
-PORT=${PGPORT} \n\
-TILESIZE=256 \n\
-USER=postgres \n\
-DBNAME=gis \n\
-MAXZOOM=20' >> /etc/renderd.conf \
- && sed -i 's,/usr/share/fonts/truetype,/usr/share/fonts,g' /etc/renderd.conf
-
 # Install helper script
 COPY --from=compiler-helper-script /home/renderer/src/regional /home/renderer/src/regional
 

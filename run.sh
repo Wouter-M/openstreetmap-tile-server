@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-export PGHOST=192.168.178.13
-export PGPORT=5432
 export PGUSER=postgres
 export PGDATABASE=gis
 
@@ -35,6 +33,23 @@ if [ ! -f /data/style/mapnik.xml ]; then
     carto ${NAME_MML:-project.mml} > mapnik.xml
 fi
 
+cat <<EOL >> /etc/renderd.conf
+[default]
+URI=/tile/
+TILEDIR=/var/cache/renderd/tiles
+XML=/home/renderer/src/openstreetmap-carto/mapnik.xml
+HOST=${PGHOST:-localhost}
+PORT=${PGPORT:-5432}
+TILESIZE=256
+USER=postgres
+DBNAME=gis
+MAXZOOM=20
+EOL
+
+sed -i 's,/usr/share/fonts/truetype,/usr/share/fonts,g' /etc/renderd.conf
+
+cat /etc/renderd.conf
+
 if [ "$1" == "run" ]; then
     # Clean /tmp
     rm -rf /tmp/*
@@ -64,7 +79,7 @@ if [ "$1" == "run" ]; then
     stop_handler() {
         kill -TERM "$child"
     }
-    trap stop_handler SIGTERM
+    trap stop_handler SIGTERM SIGINT
 
     sudo -E -u renderer renderd -f -c /etc/renderd.conf &
     child=$!
