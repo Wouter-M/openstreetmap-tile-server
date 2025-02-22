@@ -15,6 +15,7 @@ set -e
 OSMOSIS_BIN=osmosis
 OSM2PGSQL_BIN=osm2pgsql
 TRIM_BIN=/home/renderer/src/regional/trim_osc.py
+export PGHOST=192.168.178.13
 
 DBNAME=gis
 OSM2PGSQL_OPTIONS="-d $DBNAME -G --hstore --tag-transform-script /data/style/${NAME_LUA:-openstreetmap-carto.lua} --number-processes ${THREADS:-4} -S /data/style/${NAME_STYLE:-openstreetmap-carto.style} ${OSM2PGSQL_EXTRA_ARGS}"
