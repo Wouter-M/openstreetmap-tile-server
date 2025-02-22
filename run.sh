@@ -75,15 +75,7 @@ if [ "$1" == "run" ]; then
 
     fi
 
-    # Run while handling docker stop's SIGTERM
-    stop_handler() {
-        kill -TERM "$child"
-    }
-    trap stop_handler SIGTERM SIGINT
-
-    sudo -E -u renderer renderd -f -c /etc/renderd.conf &
-    child=$!
-    wait "$child"
+    sudo -E -u renderer renderd -f -c /etc/renderd.conf
 
     exit 0
 fi
